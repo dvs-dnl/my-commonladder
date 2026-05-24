@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XLKR4ZSZ5J"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XLKR4ZSZ5J');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Ladder — Common Ladder</title>
+<link rel="canonical" href="https://my.commonladder.org/">
+<meta name="description" content="My Ladder — your personal resource planner from Common Ladder. Add resources to your plan, track progress, schedule visits, and manage your budget. Free, private, no account needed.">
+<style>
+/* ── Reset & tokens ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:   #1C3D6E;
+  --amber:  #E8911A;
+  --sage:   #4A9E82;
+  --white:  #F8F7F4;
+  --gray:   #6B7280;
+  --light:  #EEF0F4;
+  --border: #D1D5DB;
+  --danger: #DC2626;
+  --green:  #16A34A;
+  --text:   #1F2937;
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,.09);
+}
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--white);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ── Top bar ────────────────────────────────────────────── */
+.topbar {
+  background: var(--blue);
+  color: #fff;
+  padding: .75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  text-decoration: none;
+  color: #fff;
+  font-size: .85rem;
+  opacity: .85;
+}
+.topbar__brand:hover { opacity: 1; }
+.topbar__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.topbar__title span { color: var(--amber); }
+
+/* ── Privacy notice ─────────────────────────────────────── */
+.privacy-bar {
+  background: #EFF6FF;
+  border-bottom: 1px solid #BFDBFE;
+  padding: .5rem 1rem;
+  font-size: .78rem;
+  color: #1E40AF;
+  text-align: center;
+}
+
+/* ── Tab nav ─────────────────────────────────────────────── */
+.tab-nav {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 53px;
+  z-index: 90;
+}
+.tab-btn {
+  flex: 1;
+  padding: .9rem .5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--gray);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color .15s, border-color .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+}
+.tab-btn.active {
+  color: var(--blue);
+  border-bottom-color: var(--amber);
+}
+.tab-btn:hover:not(.active) { color: var(--blue); }
+
+/* ── Container ───────────────────────────────────────────── */
+.container { max-width: 680px; margin: 0 auto; padding: 1.25rem 1rem 4rem; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Progress bar ────────────────────────────────────────── */
+.progress-card {
+  background: var(--blue);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.progress-card__label {
+  font-size: .82rem;
+  opacity: .8;
+  margin-bottom: .4rem;
+}
+.progress-card__stats {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: .6rem;
+}
+.progress-bar {
+  height: 8px;
+  background: rgba(255,255,255,.25);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar__fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+
+/* ── Section headings ────────────────────────────────────── */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .75rem;
+  margin-top: 1.5rem;
+}
+.section-head h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--blue);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .45rem .9rem;
+  border-radius: 6px;
+  font-size: .83rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity .15s, transform .1s;
+}
+.btn:hover { opacity: .88; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn--amber { background: var(--amber); color: #fff; }
+.btn--outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+.btn--danger { background: var(--danger); color: #fff; }
+.btn--sm { padding: .3rem .65rem; font-size: .78rem; }
+.btn--sage { background: var(--sage); color: #fff; }
+.btn--blue { background: var(--blue); color: #fff; }
+
+/* ── Category tiles ──────────────────────────────────────── */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .5rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 480px) { .cat-grid { grid-template-columns: repeat(4, 1fr); } }
+.cat-tile {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: .6rem .3rem;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s, box-shadow .15s;
+  font-size: .7rem;
+  color: var(--text);
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+}
+.cat-tile:hover { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(232,145,26,.15); }
+.cat-tile__icon { font-size: 1.4rem; line-height: 1; }
+
+/* ── Add resource form ───────────────────────────────────── */
+.add-form {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  display: none;
+}
+.add-form.open { display: block; }
+.form-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .6rem; }
+.form-group { flex: 1; min-width: 140px; }
+.form-group label { display: block; font-size: .78rem; font-weight: 600; color: var(--gray); margin-bottom: .25rem; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: .5rem .65rem;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: .88rem;
+  color: var(--text);
+  background: var(--white);
+  font-family: inherit;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+.form-group textarea { resize: vertical; min-height: 60px; }
+.form-actions { display: flex; gap: .5rem; justify-content: flex-end; margin-top: .5rem; }
+
+/* ── Plan items ──────────────────────────────────────────── */
+.plan-list { display: flex; flex-direction: column; gap: .6rem; }
+.plan-item {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: box-shadow .15s;
+}
+.plan-item:hover { box-shadow: var(--shadow); }
+.plan-item__head {
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+  padding: .85rem 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+.plan-item__icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  margin-top: .05rem;
+}
+.plan-item__info { flex: 1; min-width: 0; }
+.plan-item__name {
+  font-weight: 700;
+  font-size: .95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.plan-item__meta { font-size: .77rem; color: var(--gray); margin-top: .1rem; }
+.plan-item__status {
+  display: inline-block;
+  padding: .2rem .55rem;
+  border-radius: 20px;
+  font-size: .72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: .1rem;
+}
+.status--todo { background: var(--light); color: var(--gray); }
+.status--scheduled { background: #FEF3C7; color: #92400E; }
+.status--done { background: #D1FAE5; color: #065F46; }
+
+.plan-item__body {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid var(--light);
+  display: none;
+}
+.plan-item__body.open { display: block; }
+.plan-item__detail { font-size: .82rem; color: var(--gray); margin-bottom: .5rem; }
+.plan-item__detail strong { color: var(--text); }
+
+.item-actions { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .75rem; }
+
+/* Schedule row */
+.sched-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .5rem; flex-wrap: wrap; }
+.sched-row input[type=date], .sched-row input[type=time] {
+  padding: .35rem .6rem;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: .83rem;
+  font-family: inherit;
+  background: var(--white);
+  color: var(--text);
+}
+
+/* Done section */
+.done-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray);
+  font-size: .83rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  margin: 1rem 0 .5rem;
+  padding: 0;
+}
+.done-toggle:hover { color: var(--blue); }
+
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--gray);
+  font-size: .88rem;
+}
+.empty-state__icon { font-size: 2.5rem; margin-bottom: .5rem; }
+
+/* ── Budget tab ──────────────────────────────────────────── */
+.summary-card {
+  background: var(--blue);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+  text-align: center;
+}
+.summary-card__item {}
+.summary-card__label { font-size: .72rem; opacity: .75; margin-bottom: .2rem; }
+.summary-card__amount { font-size: 1.35rem; font-weight: 800; }
+.summary-card__amount.positive { color: #6EE7B7; }
+.summary-card__amount.negative { color: #FCA5A5; }
+
+.budget-section {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.1rem;
+  overflow: hidden;
+}
+.budget-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .8rem 1rem;
+  background: var(--light);
+  border-bottom: 1px solid var(--border);
+}
+.budget-section__title { font-weight: 700; font-size: .92rem; color: var(--blue); }
+.budget-section__total { font-size: .83rem; color: var(--gray); font-weight: 600; }
+
+.budget-items { padding: .5rem .75rem; }
+.budget-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--light);
+  font-size: .88rem;
+}
+.budget-item:last-child { border-bottom: none; }
+.budget-item__name { flex: 1; }
+.budget-item__freq { color: var(--gray); font-size: .76rem; margin: 0 .5rem; }
+.budget-item__amount { font-weight: 700; min-width: 60px; text-align: right; }
+.budget-item__del { background: none; border: none; cursor: pointer; color: var(--gray); font-size: 1rem; padding: .1rem .3rem; margin-left: .3rem; }
+.budget-item__del:hover { color: var(--danger); }
+
+.budget-add-form {
+  padding: .75rem;
+  border-top: 1px solid var(--light);
+  background: #FAFAF9;
+  display: none;
+}
+.budget-add-form.open { display: block; }
+
+/* ── Affordability calculator ─────────────────────────────── */
+.calc-card {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+}
+.calc-card h2 {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: .25rem;
+}
+.calc-card p { font-size: .8rem; color: var(--gray); margin-bottom: .85rem; }
+.calc-row {
+  display: flex;
+  gap: .75rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: .75rem;
+}
+.calc-row .form-group { margin-bottom: 0; }
+.affordability-result {
+  padding: .85rem 1rem;
+  border-radius: 8px;
+  font-size: .88rem;
+  margin-top: .5rem;
+  display: none;
+}
+.affordability-result.green { background: #D1FAE5; color: #065F46; }
+.affordability-result.amber { background: #FEF3C7; color: #92400E; }
+.affordability-result.red   { background: #FEE2E2; color: #991B1B; }
+.affordability-result__label { font-weight: 700; font-size: 1rem; margin-bottom: .2rem; }
+.affordability-result__detail { font-size: .8rem; opacity: .85; }
+.meter {
+  height: 10px;
+  background: var(--light);
+  border-radius: 5px;
+  overflow: hidden;
+  margin: .5rem 0 .25rem;
+}
+.meter__fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width .4s;
+}
+.meter__fill.green { background: var(--sage); }
+.meter__fill.amber { background: var(--amber); }
+.meter__fill.red   { background: var(--danger); }
+
+/* ── Utilities ───────────────────────────────────────────── */
+.mt-1 { margin-top: .5rem; }
+.mt-2 { margin-top: 1rem; }
+.chip {
+  display: inline-block;
+  padding: .15rem .5rem;
+  border-radius: 20px;
+  font-size: .72rem;
+  font-weight: 600;
+  background: var(--light);
+  color: var(--gray);
+  margin-right: .25rem;
+}
+.note-text { font-size: .8rem; color: var(--gray); font-style: italic; margin-top: .3rem; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="topbar">
+  <a href="https://www.commonladder.org/" class="topbar__brand">
+    <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <rect x="4" y="2" width="3" height="24" rx="1.5" fill="white" opacity=".9"/>
+      <rect x="21" y="2" width="3" height="24" rx="1.5" fill="white" opacity=".9"/>
+      <rect x="4" y="7" width="20" height="3" rx="1.5" fill="#E8911A"/>
+      <rect x="4" y="14" width="20" height="3" rx="1.5" fill="#E8911A"/>
+      <rect x="4" y="21" width="20" height="3" rx="1.5" fill="#E8911A"/>
+    </svg>
+    Common Ladder
+  </a>
+  <div class="topbar__title">My <span>Ladder</span></div>
+</header>
+
+<!-- Privacy notice -->
+<div class="privacy-bar">
+  🔒 Everything you add here stays on <strong>your device only</strong> — nothing is sent to any server.
+</div>
+
+<!-- Tab navigation -->
+<nav class="tab-nav" role="tablist">
+  <button class="tab-btn active" role="tab" aria-selected="true" id="tab-plan" onclick="switchTab('plan')">
+    <span>📋</span> My Plan
+  </button>
+  <button class="tab-btn" role="tab" aria-selected="false" id="tab-budget" onclick="switchTab('budget')">
+    <span>💰</span> My Budget
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1: MY PLAN
+════════════════════════════════════════════ -->
+<div class="tab-panel active" id="panel-plan" role="tabpanel">
+<div class="container">
+
+  <!-- Progress bar -->
+  <div class="progress-card">
+    <div class="progress-card__label">Your progress</div>
+    <div class="progress-card__stats" id="progress-stats">0 of 0 steps completed</div>
+    <div class="progress-bar"><div class="progress-bar__fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- Quick-add tiles -->
+  <div class="section-head" style="margin-top:0">
+    <h2>Add a resource</h2>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-tile" onclick="openAddForm('shelter')"><div class="cat-tile__icon">🏠</div>Shelter</div>
+    <div class="cat-tile" onclick="openAddForm('food')"><div class="cat-tile__icon">🍽️</div>Food</div>
+    <div class="cat-tile" onclick="openAddForm('health')"><div class="cat-tile__icon">🏥</div>Health</div>
+    <div class="cat-tile" onclick="openAddForm('id')"><div class="cat-tile__icon">🪪</div>ID / Docs</div>
+    <div class="cat-tile" onclick="openAddForm('employment')"><div class="cat-tile__icon">💼</div>Jobs</div>
+    <div class="cat-tile" onclick="openAddForm('housing')"><div class="cat-tile__icon">🔑</div>Housing</div>
+    <div class="cat-tile" onclick="openAddForm('benefits')"><div class="cat-tile__icon">📄</div>Benefits</div>
+    <div class="cat-tile" onclick="openAddForm('legal')"><div class="cat-tile__icon">⚖️</div>Legal</div>
+  </div>
+
+  <!-- Add form -->
+  <div class="add-form" id="add-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="f-cat">Category</label>
+        <select id="f-cat">
+          <option value="shelter">🏠 Shelter</option>
+          <option value="food">🍽️ Food</option>
+          <option value="health">🏥 Health</option>
+          <option value="id">🪪 ID / Docs</option>
+          <option value="employment">💼 Jobs</option>
+          <option value="housing">🔑 Housing</option>
+          <option value="benefits">📄 Benefits</option>
+          <option value="legal">⚖️ Legal</option>
+          <option value="other">📌 Other</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:2">
+        <label for="f-name">Resource name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Central Arizona Shelter" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="f-phone">Phone</label>
+        <input type="tel" id="f-phone" placeholder="(602) 555-0100">
+      </div>
+      <div class="form-group" style="flex:2">
+        <label for="f-address">Address</label>
+        <input type="text" id="f-address" placeholder="123 Main St, Phoenix AZ">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:1">
+        <label for="f-notes">Notes (optional)</label>
+        <textarea id="f-notes" placeholder="Hours, intake requirements, what to bring..."></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn--outline btn--sm" onclick="closeAddForm()">Cancel</button>
+      <button class="btn btn--amber btn--sm" onclick="addPlanItem()">Add to my plan</button>
+    </div>
+  </div>
+
+  <!-- Plan list -->
+  <div class="section-head">
+    <h2>My plan</h2>
+    <span id="plan-count" style="font-size:.8rem;color:var(--gray)"></span>
+  </div>
+
+  <div class="plan-list" id="plan-active-list"></div>
+  <div id="plan-empty" class="empty-state" style="display:none">
+    <div class="empty-state__icon">📋</div>
+    <p>Your plan is empty. Add a resource above to get started.</p>
+  </div>
+
+  <!-- Done section -->
+  <button class="done-toggle" id="done-toggle" onclick="toggleDone()" style="display:none">
+    ▶ Completed (<span id="done-count">0</span>)
+  </button>
+  <div class="plan-list" id="plan-done-list" style="display:none"></div>
+
+</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     TAB 2: MY BUDGET
+════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-budget" role="tabpanel">
+<div class="container">
+
+  <!-- Summary card -->
+  <div class="summary-card" id="budget-summary">
+    <div class="summary-card__item">
+      <div class="summary-card__label">Monthly income</div>
+      <div class="summary-card__amount" id="sum-income">$0</div>
+    </div>
+    <div class="summary-card__item">
+      <div class="summary-card__label">Monthly expenses</div>
+      <div class="summary-card__amount" id="sum-expenses">$0</div>
+    </div>
+    <div class="summary-card__item">
+      <div class="summary-card__label">Remaining</div>
+      <div class="summary-card__amount" id="sum-remaining">$0</div>
+    </div>
+  </div>
+
+  <!-- Income -->
+  <div class="budget-section">
+    <div class="budget-section__head">
+      <div>
+        <div class="budget-section__title">💵 Income</div>
+        <div class="budget-section__total" id="income-total-label">$0 / month</div>
+      </div>
+      <button class="btn btn--sage btn--sm" onclick="toggleBudgetForm('income-form')">+ Add</button>
+    </div>
+    <div class="budget-items" id="income-items">
+      <div class="empty-state" style="padding:1rem;font-size:.82rem">No income added yet.</div>
+    </div>
+    <div class="budget-add-form" id="income-form">
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label>Source name</label>
+          <input type="text" id="inc-name" placeholder="e.g. SSI, part-time job">
+        </div>
+        <div class="form-group">
+          <label>Amount ($)</label>
+          <input type="number" id="inc-amount" placeholder="0" min="0" step="1">
+        </div>
+        <div class="form-group">
+          <label>Frequency</label>
+          <select id="inc-freq">
+            <option value="monthly">Monthly</option>
+            <option value="biweekly">Bi-weekly</option>
+            <option value="weekly">Weekly</option>
+            <option value="once">One-time</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--outline btn--sm" onclick="toggleBudgetForm('income-form')">Cancel</button>
+        <button class="btn btn--sage btn--sm" onclick="addBudgetItem('income')">Add income</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expenses -->
+  <div class="budget-section">
+    <div class="budget-section__head">
+      <div>
+        <div class="budget-section__title">📤 Expenses</div>
+        <div class="budget-section__total" id="expense-total-label">$0 / month</div>
+      </div>
+      <button class="btn btn--amber btn--sm" onclick="toggleBudgetForm('expense-form')">+ Add</button>
+    </div>
+    <div class="budget-items" id="expense-items">
+      <div class="empty-state" style="padding:1rem;font-size:.82rem">No expenses added yet.</div>
+    </div>
+    <div class="budget-add-form" id="expense-form">
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label>Expense name</label>
+          <input type="text" id="exp-name" placeholder="e.g. Phone, bus pass, storage unit">
+        </div>
+        <div class="form-group">
+          <label>Amount ($)</label>
+          <input type="number" id="exp-amount" placeholder="0" min="0" step="1">
+        </div>
+        <div class="form-group">
+          <label>Frequency</label>
+          <select id="exp-freq">
+            <option value="monthly">Monthly</option>
+            <option value="biweekly">Bi-weekly</option>
+            <option value="weekly">Weekly</option>
+            <option value="once">One-time</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn--outline btn--sm" onclick="toggleBudgetForm('expense-form')">Cancel</button>
+        <button class="btn btn--amber btn--sm" onclick="addBudgetItem('expense')">Add expense</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Housing affordability calculator -->
+  <div class="calc-card">
+    <h2>🏠 Housing Affordability Calculator</h2>
+    <p>The general guideline is that housing should cost no more than 30% of your monthly income.</p>
+    <div class="calc-row">
+      <div class="form-group" style="flex:1">
+        <label for="calc-income">Monthly income ($)</label>
+        <input type="number" id="calc-income" placeholder="0" min="0" step="1" oninput="runCalc()">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label for="calc-rent">Monthly rent to check ($)</label>
+        <input type="number" id="calc-rent" placeholder="0" min="0" step="1" oninput="runCalc()">
+      </div>
+    </div>
+    <div id="calc-result" class="affordability-result">
+      <div class="affordability-result__label" id="calc-label"></div>
+      <div class="meter"><div class="meter__fill" id="calc-meter"></div></div>
+      <div class="affordability-result__detail" id="calc-detail"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<script>
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+const CAT_ICONS = {
+  shelter:'🏠', food:'🍽️', health:'🏥', id:'🪪',
+  employment:'💼', housing:'🔑', benefits:'📄', legal:'⚖️', other:'📌'
+};
+const FREQ_LABELS = { monthly:'/ mo', biweekly:'/ 2 wks', weekly:'/ wk', once:'one-time' };
+const FREQ_TO_MONTHLY = { monthly:1, biweekly:2.1667, weekly:4.3333, once:0 };
+
+function load(key, def) {
+  try { return JSON.parse(localStorage.getItem(key)) || def; } catch(e) { return def; }
+}
+function save(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+let planItems = load('cl_plan_v1', []);
+let incomeItems = load('cl_income_v1', []);
+let expenseItems = load('cl_expense_v1', []);
+
+/* ══════════════════════════════════════════
+   TABS
+══════════════════════════════════════════ */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).setAttribute('aria-selected','true');
+}
+
+/* ══════════════════════════════════════════
+   PLAN — add form
+══════════════════════════════════════════ */
+function openAddForm(cat) {
+  document.getElementById('f-cat').value = cat;
+  document.getElementById('add-form').classList.add('open');
+  document.getElementById('f-name').focus();
+  document.getElementById('add-form').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+function closeAddForm() {
+  document.getElementById('add-form').classList.remove('open');
+  ['f-name','f-phone','f-address','f-notes'].forEach(id => document.getElementById(id).value = '');
+}
+function addPlanItem() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { document.getElementById('f-name').focus(); return; }
+  const item = {
+    id: Date.now().toString(),
+    cat: document.getElementById('f-cat').value,
+    name,
+    phone: document.getElementById('f-phone').value.trim(),
+    address: document.getElementById('f-address').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    status: 'todo',
+    scheduledDate: '',
+    scheduledTime: '',
+    addedAt: new Date().toISOString(),
+    completedAt: null
+  };
+  planItems.unshift(item);
+  save('cl_plan_v1', planItems);
+  closeAddForm();
+  renderPlan();
+}
+
+/* ══════════════════════════════════════════
+   PLAN — render
+══════════════════════════════════════════ */
+let doneOpen = false;
+
+function renderPlan() {
+  const active = planItems.filter(i => i.status !== 'done');
+  const done   = planItems.filter(i => i.status === 'done');
+  const total  = planItems.length;
+  const doneCount = done.length;
+
+  // Progress
+  const pct = total ? Math.round(doneCount/total*100) : 0;
+  document.getElementById('progress-stats').textContent = `${doneCount} of ${total} step${total===1?'':'s'} completed`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // Count label
+  document.getElementById('plan-count').textContent = active.length ? `${active.length} active` : '';
+
+  // Sort: scheduled first, then todo
+  const sorted = [...active].sort((a,b) => {
+    const rank = {scheduled:0, todo:1};
+    return (rank[a.status]||2) - (rank[b.status]||2);
+  });
+
+  const activeEl = document.getElementById('plan-active-list');
+  activeEl.innerHTML = '';
+  sorted.forEach(item => activeEl.appendChild(buildItemEl(item)));
+
+  document.getElementById('plan-empty').style.display = active.length ? 'none' : 'block';
+
+  // Done toggle
+  const toggleEl = document.getElementById('done-toggle');
+  const doneEl   = document.getElementById('plan-done-list');
+  document.getElementById('done-count').textContent = doneCount;
+  if (doneCount) {
+    toggleEl.style.display = 'flex';
+    toggleEl.innerHTML = `${doneOpen ? '▼' : '▶'} Completed (<span id="done-count">${doneCount}</span>)`;
+    doneEl.style.display = doneOpen ? 'flex' : 'none';
+    doneEl.innerHTML = '';
+    done.forEach(item => doneEl.appendChild(buildItemEl(item)));
+  } else {
+    toggleEl.style.display = 'none';
+    doneEl.style.display = 'none';
+  }
+}
+
+function toggleDone() {
+  doneOpen = !doneOpen;
+  renderPlan();
+}
+
+function buildItemEl(item) {
+  const el = document.createElement('div');
+  el.className = 'plan-item';
+  el.id = 'item-' + item.id;
+
+  const statusLabel = { todo:'To do', scheduled:'Scheduled', done:'Done' }[item.status] || item.status;
+  const metaParts = [];
+  if (item.address) metaParts.push(item.address);
+  if (item.phone)   metaParts.push(item.phone);
+  if (item.scheduledDate) metaParts.push('📅 ' + fmtDate(item.scheduledDate) + (item.scheduledTime ? ' at ' + fmtTime(item.scheduledTime) : ''));
+
+  el.innerHTML = `
+    <div class="plan-item__head" onclick="toggleItem('${item.id}')">
+      <div class="plan-item__icon">${CAT_ICONS[item.cat] || '📌'}</div>
+      <div class="plan-item__info">
+        <div class="plan-item__name">${esc(item.name)}</div>
+        ${metaParts.length ? `<div class="plan-item__meta">${metaParts.map(esc).join(' · ')}</div>` : ''}
+      </div>
+      <span class="plan-item__status status--${item.status}">${statusLabel}</span>
+    </div>
+    <div class="plan-item__body" id="body-${item.id}">
+      ${item.address ? `<div class="plan-item__detail"><strong>Address:</strong> ${esc(item.address)}</div>` : ''}
+      ${item.phone   ? `<div class="plan-item__detail"><strong>Phone:</strong> <a href="tel:${esc(item.phone)}">${esc(item.phone)}</a></div>` : ''}
+      ${item.notes   ? `<div class="plan-item__detail"><strong>Notes:</strong> ${esc(item.notes)}</div>` : ''}
+
+      ${item.status !== 'done' ? `
+      <div class="sched-row">
+        <label style="font-size:.78rem;font-weight:600;color:var(--gray)">Schedule:</label>
+        <input type="date" id="sched-date-${item.id}" value="${item.scheduledDate}" onchange="updateSched('${item.id}')">
+        <input type="time" id="sched-time-${item.id}" value="${item.scheduledTime}" onchange="updateSched('${item.id}')">
+      </div>
+      ` : ''}
+
+      <div class="item-actions">
+        ${item.status !== 'done' ? `<button class="btn btn--sage btn--sm" onclick="markDone('${item.id}')">✓ Mark done</button>` : `<button class="btn btn--outline btn--sm" onclick="markTodo('${item.id}')">↩ Move back</button>`}
+        ${item.status === 'scheduled' ? `<button class="btn btn--outline btn--sm" onclick="markTodo('${item.id}')">Clear schedule</button>` : ''}
+        <button class="btn btn--danger btn--sm" onclick="deleteItem('${item.id}')">Delete</button>
+      </div>
+    </div>
+  `;
+  return el;
+}
+
+function toggleItem(id) {
+  const body = document.getElementById('body-' + id);
+  body.classList.toggle('open');
+}
+
+function markDone(id) {
+  const item = planItems.find(i => i.id === id);
+  if (item) { item.status = 'done'; item.completedAt = new Date().toISOString(); }
+  save('cl_plan_v1', planItems);
+  renderPlan();
+}
+function markTodo(id) {
+  const item = planItems.find(i => i.id === id);
+  if (item) { item.status = 'todo'; item.scheduledDate = ''; item.scheduledTime = ''; }
+  save('cl_plan_v1', planItems);
+  renderPlan();
+}
+function deleteItem(id) {
+  if (!confirm('Remove this resource from your plan?')) return;
+  planItems = planItems.filter(i => i.id !== id);
+  save('cl_plan_v1', planItems);
+  renderPlan();
+}
+function updateSched(id) {
+  const item = planItems.find(i => i.id === id);
+  if (!item) return;
+  const d = document.getElementById('sched-date-' + id)?.value || '';
+  const t = document.getElementById('sched-time-' + id)?.value || '';
+  item.scheduledDate = d;
+  item.scheduledTime = t;
+  item.status = d ? 'scheduled' : 'todo';
+  save('cl_plan_v1', planItems);
+  renderPlan();
+  // Re-open the item body after rerender
+  setTimeout(() => { const b = document.getElementById('body-' + id); if(b) b.classList.add('open'); }, 10);
+}
+
+/* ══════════════════════════════════════════
+   BUDGET
+══════════════════════════════════════════ */
+function toggleBudgetForm(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function toMonthly(amount, freq) {
+  return parseFloat(amount || 0) * (FREQ_TO_MONTHLY[freq] || 1);
+}
+
+function addBudgetItem(type) {
+  const isIncome = type === 'income';
+  const nameEl   = document.getElementById(isIncome ? 'inc-name'   : 'exp-name');
+  const amtEl    = document.getElementById(isIncome ? 'inc-amount' : 'exp-amount');
+  const freqEl   = document.getElementById(isIncome ? 'inc-freq'   : 'exp-freq');
+  const name  = nameEl.value.trim();
+  const amount = parseFloat(amtEl.value);
+  if (!name || isNaN(amount) || amount < 0) { nameEl.focus(); return; }
+  const item = { id: Date.now().toString(), name, amount, freq: freqEl.value };
+  if (isIncome) { incomeItems.push(item); save('cl_income_v1', incomeItems); }
+  else          { expenseItems.push(item); save('cl_expense_v1', expenseItems); }
+  nameEl.value = ''; amtEl.value = '';
+  document.getElementById(isIncome ? 'income-form' : 'expense-form').classList.remove('open');
+  renderBudget();
+}
+
+function deleteBudgetItem(type, id) {
+  if (type === 'income') { incomeItems = incomeItems.filter(i => i.id !== id); save('cl_income_v1', incomeItems); }
+  else                   { expenseItems = expenseItems.filter(i => i.id !== id); save('cl_expense_v1', expenseItems); }
+  renderBudget();
+}
+
+function renderBudget() {
+  const totalIncome  = incomeItems.reduce((s,i)  => s + toMonthly(i.amount, i.freq), 0);
+  const totalExpense = expenseItems.reduce((s,i) => s + toMonthly(i.amount, i.freq), 0);
+  const remaining    = totalIncome - totalExpense;
+
+  document.getElementById('sum-income').textContent    = fmt(totalIncome);
+  document.getElementById('sum-expenses').textContent  = fmt(totalExpense);
+  const remEl = document.getElementById('sum-remaining');
+  remEl.textContent = fmt(Math.abs(remaining));
+  remEl.className = 'summary-card__amount ' + (remaining >= 0 ? 'positive' : 'negative');
+  if (remaining < 0) remEl.textContent = '-' + fmt(Math.abs(remaining));
+
+  document.getElementById('income-total-label').textContent  = fmt(totalIncome) + ' / month';
+  document.getElementById('expense-total-label').textContent = fmt(totalExpense) + ' / month';
+
+  renderBudgetItems('income-items',  incomeItems,  'income');
+  renderBudgetItems('expense-items', expenseItems, 'expense');
+
+  // Update calculator income field if empty and we have income
+  if (!document.getElementById('calc-income').value && totalIncome > 0) {
+    document.getElementById('calc-income').value = Math.round(totalIncome);
+    runCalc();
+  }
+}
+
+function renderBudgetItems(containerId, items, type) {
+  const el = document.getElementById(containerId);
+  if (!items.length) {
+    el.innerHTML = `<div class="empty-state" style="padding:1rem;font-size:.82rem">No ${type === 'income' ? 'income' : 'expenses'} added yet.</div>`;
+    return;
+  }
+  el.innerHTML = items.map(item => `
+    <div class="budget-item">
+      <div class="budget-item__name">${esc(item.name)}</div>
+      <div class="budget-item__freq">${FREQ_LABELS[item.freq] || ''}</div>
+      <div class="budget-item__amount">$${parseFloat(item.amount).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}</div>
+      <button class="budget-item__del" onclick="deleteBudgetItem('${type}','${item.id}')" aria-label="Remove">×</button>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════════════════════════════
+   CALCULATOR
+══════════════════════════════════════════ */
+function runCalc() {
+  const income = parseFloat(document.getElementById('calc-income').value) || 0;
+  const rent   = parseFloat(document.getElementById('calc-rent').value)   || 0;
+  const result = document.getElementById('calc-result');
+  if (!income || !rent) { result.style.display = 'none'; return; }
+
+  const pct = rent / income;
+  const maxAffordable = income * 0.30;
+  let cls, label, detail;
+
+  if (pct <= 0.30) {
+    cls = 'green';
+    label = '✅ Affordable';
+    detail = `This rent is ${Math.round(pct*100)}% of your income — within the 30% guideline. You have ${fmt(income - rent)} left each month after rent.`;
+  } else if (pct <= 0.50) {
+    cls = 'amber';
+    label = '⚠️ Stretched';
+    detail = `This rent is ${Math.round(pct*100)}% of your income — above the 30% guideline but may be manageable. To stay within guideline, look for housing under ${fmt(maxAffordable)}/month.`;
+  } else {
+    cls = 'red';
+    label = '🚫 Too expensive';
+    detail = `This rent is ${Math.round(pct*100)}% of your income — significantly above the 30% guideline. Based on your income, look for housing under ${fmt(maxAffordable)}/month.`;
+  }
+
+  result.className = 'affordability-result ' + cls;
+  result.style.display = 'block';
+  document.getElementById('calc-label').textContent  = label;
+  document.getElementById('calc-detail').textContent = detail;
+  const meterFill = document.getElementById('calc-meter');
+  meterFill.className = 'meter__fill ' + cls;
+  meterFill.style.width = Math.min(pct * 100, 100) + '%';
+}
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m,10)-1]} ${parseInt(day,10)}`;
+}
+function fmtTime(t) {
+  if (!t) return '';
+  const [h,m] = t.split(':');
+  const hour = parseInt(h,10);
+  return `${hour > 12 ? hour-12 : hour || 12}:${m} ${hour >= 12 ? 'PM' : 'AM'}`;
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+renderPlan();
+renderBudget();
+</script>
+</body>
+</html>

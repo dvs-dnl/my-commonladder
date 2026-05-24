@@ -220,6 +220,14 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--white);color:var(
 .meter{height:10px;background:var(--light);border-radius:5px;overflow:hidden;margin:.5rem 0 .25rem}
 .meter__fill{height:100%;border-radius:5px;transition:width .4s}
 .meter__fill.green{background:var(--sage)}.meter__fill.amber{background:var(--amber)}.meter__fill.red{background:var(--danger)}
+
+/* ── Import welcome banner ── */
+.import-banner{background:linear-gradient(135deg,#1C3D6E 0%,#2a5298 100%);color:#fff;border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1.25rem;position:relative}
+.import-banner__title{font-size:1rem;font-weight:700;margin-bottom:.3rem}
+.import-banner__body{font-size:.85rem;opacity:.9;line-height:1.5}
+.import-banner__close{position:absolute;top:.75rem;right:.75rem;background:none;border:none;color:#fff;cursor:pointer;font-size:1.2rem;opacity:.7;line-height:1}
+.import-banner__close:hover{opacity:1}
+
 </style>
 </head>
 <body>
@@ -897,6 +905,41 @@ function fmt(n){return'$'+Math.round(n).toLocaleString('en-US')}
 function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${mo[parseInt(m,10)-1]} ${parseInt(day,10)}`}
 function fmtTime(t){if(!t)return'';const[h,m]=t.split(':');const hr=parseInt(h,10);return`${hr>12?hr-12:hr||12}:${m} ${hr>=12?'PM':'AM'}`}
 function fmtTs(ts){if(!ts)return'';const d=new Date(ts);const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${mo[d.getMonth()]} ${d.getDate()}, ${d.getHours()>12?d.getHours()-12:d.getHours()||12}:${String(d.getMinutes()).padStart(2,'0')} ${d.getHours()>=12?'PM':'AM'}`}
+
+/* ══ URL IMPORT ══ */
+(function(){
+  const params=new URLSearchParams(location.search);
+  const raw=params.get('add');
+  if(!raw)return;
+  try{
+    const data=JSON.parse(decodeURIComponent(escape(atob(raw))));
+    const item=makePlanItem(data.cat||'shelter',data.name||'Resource',data.phone||'',data.address||',',' ');
+    item.notes=data.notes||'';
+    if(Array.isArray(data.followups)){
+      item.followups=data.followups.map(f=>({
+        id:Date.now().toString()+Math.random().toString(36).slice(2,6),
+        text:f.text||f,dueDate:f.dueDate||'',
+        done:false,createdAt:new Date().toISOString()
+      }));
+    }
+    logActivity(item,'added','Added from '+(data.source||'navigator'));
+    planItems.unshift(item);
+    save('cl_plan_v2',planItems);
+    history.replaceState({},'',location.pathname);
+    // Show welcome banner
+    const banner=document.createElement('div');
+    banner.className='import-banner';
+    banner.innerHTML=`
+      <button class="import-banner__close" onclick="this.parentElement.remove()">×</button>
+      <div class="import-banner__title">✅ Added to your plan!</div>
+      <div class="import-banner__body">
+        <strong>${esc(item.name)}</strong> is now in My Plan. My Ladder helps you track every resource, log calls and visits, schedule appointments, and manage your budget — all on your device. Nothing leaves this app.<br>
+        <span style="opacity:.75;font-size:.78rem">Tap the item below to see your follow-up tasks and add notes.</span>
+      </div>`;
+    const container=document.querySelector('#panel-plan .container');
+    if(container) container.insertBefore(banner,container.firstChild);
+  }catch(e){console.warn('Import parse error',e);}
+})();
 
 renderPlan();
 renderBudget();
